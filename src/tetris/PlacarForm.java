@@ -24,7 +24,9 @@ public class PlacarForm extends javax.swing.JFrame {
     
     private DefaultTableModel tb;
     
-    private String ArquivoPlacar = "placar";
+    private String caminhoArquivo = "placar";
+    
+    private PersistenciaArquivo<Vector<Vector>> persistenciaPlacar = new PersistenciaArquivo<>(caminhoArquivo);
     
     private TableRowSorter<TableModel> sorter;
     
@@ -41,6 +43,14 @@ public class PlacarForm extends javax.swing.JFrame {
         
         tb = (DefaultTableModel) tablePlacar.getModel();
         
+        Vector<Vector> dadosSalvos = persistenciaPlacar.carregar();
+        
+        if (dadosSalvos != null) 
+        {
+        tb.setDataVector(dadosSalvos, columnIdentifiers);
+        }
+        
+        /*
         try
         {
         FileInputStream fs = new FileInputStream(ArquivoPlacar);
@@ -52,6 +62,7 @@ public class PlacarForm extends javax.swing.JFrame {
         fs.close();
         }
         catch (Exception e){}
+        */
     }
     
     private void iniTableSorter(){
@@ -65,6 +76,8 @@ public class PlacarForm extends javax.swing.JFrame {
     }
     
     private void SalvarPlacar(){
+        persistenciaPlacar.salvar(tb.getDataVector());
+        /*
         try
         {
         FileOutputStream fs = new FileOutputStream(ArquivoPlacar);
@@ -76,7 +89,7 @@ public class PlacarForm extends javax.swing.JFrame {
         fs.close();
         }
         catch (Exception e){}
-        
+        */    
     }
 
     /**
