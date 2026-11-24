@@ -6,6 +6,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import tetris.commands.*;
 
 public class GameForm extends JFrame {
     
@@ -27,46 +28,36 @@ public class GameForm extends JFrame {
         gt.start();
     }
     
+    
+    
+    // Fiz uma alteração aqui adicionando o Padrão de Projeto "COMMAND" pelo modo que a requisição é feita
+    // GameForm se comunica diretamente com GameArea e gera muita repetição de codigo, vamos fazer com que os comandos
+    // tornem-se classes para que eu possa passa-los como parametros
+    
+    private void registrarComando(String tecla, String nomeAcao, GameCommand comando) 
+    {
+    InputMap im = this.getRootPane().getInputMap();
+    ActionMap am = this.getRootPane().getActionMap();
+
+    im.put(KeyStroke.getKeyStroke(tecla), nomeAcao);
+    am.put(nomeAcao, new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            comando.execute();
+        }
+    });
+    }
+    
+    /*
+    No GameForm, os comandos do teclado chamavam diretamente os métodos de movimento da GameArea dentro de várias AbstractAction parecidas. 
+    O padrão Command criando a interface GameCommand e classes específicas para cada movimento, fazendo o formulário apenas disparar execute(). 
+    Ttorna simples adicionar novas ações ou regras de entrada sem inflar o GameForm.
+    */
     private void iniControles(){
-        InputMap im = this.getRootPane().getInputMap();
-        ActionMap am = this.getRootPane().getActionMap();
-        
-        im.put(KeyStroke.getKeyStroke("RIGHT"), "right");
-        im.put(KeyStroke.getKeyStroke("LEFT"), "left");
-        im.put(KeyStroke.getKeyStroke("UP"), "up");
-        im.put(KeyStroke.getKeyStroke("DOWN"), "down");
-        
-        am.put("right", new AbstractAction(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ga.moverBlockDir();
-                //System.out.println("right");
-            }  
-        });
-        
-        am.put("left", new AbstractAction(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ga.moverBlockEsq();
-                //System.out.println("left");
-            }  
-        });
-        
-        am.put("up", new AbstractAction(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ga.rotacioanrBlock();
-               //System.out.println("up"); 
-            }  
-        });
-        
-        am.put("down", new AbstractAction(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ga.dropBlock();
-                //System.out.println("down");
-            }  
-        });
+        registrarComando("RIGHT", "right", new MoverDireitaCommand(ga));
+        registrarComando("LEFT", "left", new MoverEsquerdaCommand(ga));
+        registrarComando("UP", "up", new RotacionarCommand(ga));
+        registrarComando("DOWN", "down", new DropCommand(ga));
     }
     
 
@@ -158,7 +149,7 @@ public class GameForm extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        
+
         gt.interrupt(); // Tem que tirar a parte que ele pega excecao aarr
         this.setVisible(false);
         Tetris.mostrarInicial();

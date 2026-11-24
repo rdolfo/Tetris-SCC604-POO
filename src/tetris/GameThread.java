@@ -14,6 +14,10 @@ public class GameThread extends Thread
     
     private int pausa = 1000;
     private int velPorNivel = 100;
+
+    public int getPontuacao() {
+        return pontuacao;
+    }
     
     public GameThread(GameArea ga, GameForm gf){
         this.ga = ga;
@@ -53,6 +57,7 @@ public class GameThread extends Thread
                 nivel = lvl;
                 gf.atualizaNivel(nivel);
                 pausa -= velPorNivel;
+                // Ainda teremos um grande problema quando isso for negativo kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
             }
             
             // Todo vez que essa loop apaga spawno um bloco novo, preciso salvar o bloco antigo para carregar ele

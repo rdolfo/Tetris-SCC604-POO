@@ -16,7 +16,8 @@ public class GameArea extends JPanel
     private Color[][] background;
     
     private TetrisBlock block;
-    private TetrisBlock blocks[];
+    // private TetrisBlock blocks[];
+    private final TetrisBlockFactory blockFactory = new TetrisBlockFactory();
     
     public GameArea(JPanel placeholder, int ncolunas){
     this.setBounds(placeholder.getBounds());
@@ -27,7 +28,7 @@ public class GameArea extends JPanel
         tamCelula = this.getBounds().width / gridColunas;
         gridLinhas = this.getBounds().height / tamCelula;
         
-                
+        /*
         blocks = new TetrisBlock[]{ new Iblock(),
                                     new Jblock(),
                                     new Lblock(),
@@ -35,6 +36,7 @@ public class GameArea extends JPanel
                                     new Sblock(),
                                     new Tblock(),
                                     new Zblock()};
+        */
     }
     
     public void iniBackground()
@@ -42,10 +44,13 @@ public class GameArea extends JPanel
         background = new Color[gridLinhas][gridColunas];
     }
     
-    
+    // Em vez de guardar uma instância fixa de cada peça em blocks[] e reutilizar a mesma referência ao longo da partida, cada spawnBlock() recebe um bloco novo.
     public void spawnBlock(){
+        /*
         Random r = new Random();
         block = blocks[r.nextInt(blocks.length)];
+        */
+        block = blockFactory.createRandomBlock();
         block.spawn(gridColunas);
     }
     
